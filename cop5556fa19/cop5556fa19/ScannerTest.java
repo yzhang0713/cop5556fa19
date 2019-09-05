@@ -63,54 +63,80 @@ class ScannerTest {
 	 * This "@" character is illegal in the final scanner (except as part of a String literal or comment). So this
 	 * test should remain valid in your complete Scanner.
 	 */
-	@Test
-	void test1() throws Exception {
-		Reader r = new StringReader("@");
-		Scanner s = new Scanner(r);
-        assertThrows(LexicalException.class, ()->{
-		   s.getNext();
-        });
-	}
-	
-	/**
-	 * Example showing how to read the input from a file.  Otherwise it is the same as test1.
-	 *
-	 */
-	@Test
-	void test2() throws Exception {
-		String file = "testInputFiles\\test2.input"; 
-		Reader r = new BufferedReader(new FileReader(file));
-		Scanner s = new Scanner(r);
-        assertThrows(LexicalException.class, ()->{
-		   s.getNext();
-        });
-	}
+//	@Test
+//	void test1() throws Exception {
+//		Reader r = new StringReader("@");
+//		Scanner s = new Scanner(r);
+//        assertThrows(LexicalException.class, ()->{
+//		   s.getNext();
+//        });
+//	}
+//	
+//	/**
+//	 * Example showing how to read the input from a file.  Otherwise it is the same as test1.
+//	 *
+//	 */
+//	@Test
+//	void test2() throws Exception {
+//		String file = "testInputFiles\\test2.input"; 
+//		Reader r = new BufferedReader(new FileReader(file));
+//		Scanner s = new Scanner(r);
+//        assertThrows(LexicalException.class, ()->{
+//		   s.getNext();
+//        });
+//	}
 	
 
+	@Test 
+	void test3() throws Exception {
+		Reader r = new StringReader("+-*%^#&~|");
+		Scanner s = new Scanner(r);
+		Token t;
+		show(t= s.getNext()); 
+		assertEquals(OP_PLUS, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(OP_MINUS, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(OP_TIMES, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(OP_MOD, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(OP_POW, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(OP_HASH, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(BIT_AMP, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(BIT_XOR, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(BIT_OR, t.kind);
+		show(t= s.getNext());
+		assertEquals(EOF, t.kind);
+	}
 	
 	/**
 	 * Another example.  This test case will fail with the provided code, but should pass in your completed Scanner.
 	 * @throws Exception
 	 */
-	@Test
-	void test3() throws Exception {
-		Reader r = new StringReader(",,::==");
-		Scanner s = new Scanner(r);
-		Token t;
-		show(t= s.getNext());
-		assertEquals(t.kind,COMMA);
-		assertEquals(t.text,",");
-		show(t = s.getNext());
-		assertEquals(t.kind,COMMA);
-		assertEquals(t.text,",");
-		
-		show(t = s.getNext());
-		assertEquals(t.kind,COLONCOLON);
-		assertEquals(t.text,"::");
-		
-		show(t = s.getNext());
-		assertEquals(t.kind,REL_EQEQ);
-		assertEquals(t.text,"==");
-	}
+//	@Test
+//	void test3() throws Exception {
+//		Reader r = new StringReader(",,::==");
+//		Scanner s = new Scanner(r);
+//		Token t;
+//		show(t= s.getNext());
+//		assertEquals(t.kind,COMMA);
+//		assertEquals(t.text,",");
+//		show(t = s.getNext());
+//		assertEquals(t.kind,COMMA);
+//		assertEquals(t.text,",");
+//		
+//		show(t = s.getNext());
+//		assertEquals(t.kind,COLONCOLON);
+//		assertEquals(t.text,"::");
+//		
+//		show(t = s.getNext());
+//		assertEquals(t.kind,REL_EQEQ);
+//		assertEquals(t.text,"==");
+//	}
 
 }
