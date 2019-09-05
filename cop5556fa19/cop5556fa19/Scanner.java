@@ -32,6 +32,7 @@ public class Scanner {
 		HAVE_DV, // /
 		HAVE_CL, // :
 		HAVE_DT, // .
+		HAVE_DDT, // ..
 		HAVE_CR, // \r
 		IN_NAME,
 		IN_INTLIT,
@@ -92,22 +93,86 @@ public class Scanner {
 				switch (state) {
 					case START: {
 						// Skip white space
-						getChar();
 						while (Character.isWhitespace(ch)) { getChar(); }
 						pos = currPos;
 						line = currLine;
 						switch (ch) {
+							case 0: {getChar();} break;
 							case -1: {t = new Token(EOF,"eof",pos,line);} break;
-							case '+': {t = new Token(OP_PLUS,"+",pos,line);} break;
-							case '-': {t = new Token(OP_MINUS,"-",pos,line);} break;
-							case '*': {t = new Token(OP_TIMES,"*",pos,line);} break;
-							case '%': {t = new Token(OP_MOD,"%",pos,line);} break;
-							case '^': {t = new Token(OP_POW,"^",pos,line);} break;
-							case '#': {t = new Token(OP_HASH,"#",pos,line);} break;
-							case '&': {t = new Token(BIT_AMP,"&",pos,line);} break;
-							case '~': {t = new Token(BIT_XOR,"~",pos,line);} break;
-							case '|': {t = new Token(BIT_OR,"|",pos,line);} break;
+							case '+': {t = new Token(OP_PLUS,"+",pos,line); getChar();} break;
+							case '-': {t = new Token(OP_MINUS,"-",pos,line); getChar();} break;
+							case '*': {t = new Token(OP_TIMES,"*",pos,line); getChar();} break;
+							case '%': {t = new Token(OP_MOD,"%",pos,line); getChar();} break;
+							case '^': {t = new Token(OP_POW,"^",pos,line); getChar();} break;
+							case '#': {t = new Token(OP_HASH,"#",pos,line); getChar();} break;
+							case '&': {t = new Token(BIT_AMP,"&",pos,line); getChar();} break;
+							case '|': {t = new Token(BIT_OR,"|",pos,line); getChar();} break;
+							case '(': {t = new Token(LPAREN,"(",pos,line); getChar();} break;
+							case ')': {t = new Token(RPAREN,")",pos,line); getChar();} break;
+							case '{': {t = new Token(LCURLY,"{",pos,line); getChar();} break;
+							case '}': {t = new Token(RCURLY,"}",pos,line); getChar();} break;
+							case '[': {t = new Token(LSQUARE,"[",pos,line); getChar();} break;
+							case ']': {t = new Token(RSQUARE,"]",pos,line); getChar();} break;
+							case ',': {t = new Token(COMMA,",",pos,line); getChar();} break;
+							case ';': {t = new Token(SEMI,";",pos,line); getChar();} break;
+							case '~': {state = State.HAVE_TL; getChar();} break;
+							case '=': {state = State.HAVE_EQ; getChar();} break;
+							case '/': {state = State.HAVE_DV; getChar();} break;
+							case '<': {state = State.HAVE_LS; getChar();} break;
+							case '>': {state = State.HAVE_GR; getChar();} break;
+							case ':': {state = State.HAVE_CL; getChar();} break;
+							case '.': {state = State.HAVE_DT; getChar();} break;
 							default : break;
+						}
+					} break;
+					case HAVE_TL: {
+						switch (ch) {
+							case '=': {t = new Token(REL_NOTEQ,"~=",pos,line); state = State.START; getChar();} break;
+							default : {t = new Token(BIT_XOR,"~",pos,line); state = State.START;} break;
+						}
+					} break;
+					case HAVE_EQ: {
+						switch (ch) {
+							case '=': {t = new Token(REL_EQEQ,"==",pos,line); state = State.START; getChar();} break;
+							default : {t = new Token(ASSIGN,"=",pos,line); state = State.START;} break;
+						}
+					} break;
+					case HAVE_DV: {
+						switch (ch) {
+							case '/': {t = new Token(OP_DIVDIV,"//",pos,line); state = State.START; getChar();} break;
+							default : {t = new Token(OP_DIV,"/",pos,line); state = State.START;} break;
+						}
+					} break;
+					case HAVE_LS: {
+						switch (ch) {
+							case '<': {t = new Token(BIT_SHIFTL,"<<",pos,line); state = State.START; getChar();} break;
+							case '=': {t = new Token(REL_LE,"<=",pos,line); state = State.START; getChar();} break;
+							default : {t = new Token(REL_LT,"<",pos,line); state = State.START;} break;
+						}
+					} break;
+					case HAVE_GR: {
+						switch (ch) {
+							case '>': {t = new Token(BIT_SHIFTR,">>",pos,line); state = State.START; getChar();} break;
+							case '=': {t = new Token(REL_GE,">=",pos,line); state = State.START; getChar();} break;
+							default : {t = new Token(REL_GT,">",pos,line); state = State.START;} break;
+						}
+					} break;
+					case HAVE_CL: {
+						switch (ch) {
+							case ':': {t = new Token(COLONCOLON,"::",pos,line); state = State.START; getChar();} break;
+							default : {t = new Token(COLON,":",pos,line); state = State.START;} break;
+						}
+					} break;
+					case HAVE_DT: {
+						switch (ch) {
+							case '.': {state = State.HAVE_DDT; getChar();} break;
+							default : {t = new Token(DOT,".",pos,line); state = State.START;} break;
+						}
+					} break;
+					case HAVE_DDT: {
+						switch (ch) {
+							case '.': {t = new Token(DOTDOTDOT,"...",pos,line); state = State.START; getChar();} break;
+							default : {t = new Token(DOTDOT,"..",pos,line); state = State.START;} break;
 						}
 					} break;
 					default : break;

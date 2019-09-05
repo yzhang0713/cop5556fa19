@@ -114,6 +114,94 @@ class ScannerTest {
 		assertEquals(EOF, t.kind);
 	}
 	
+	@Test 
+	void test5() throws Exception {
+		Reader r = new StringReader("===///");
+		Scanner s = new Scanner(r);
+		Token t;
+		show(t= s.getNext()); 
+		assertEquals(REL_EQEQ, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(ASSIGN, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(OP_DIVDIV, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(OP_DIV, t.kind);
+		show(t= s.getNext());
+		assertEquals(EOF, t.kind);
+	}
+	
+	@Test 
+	void test6() throws Exception {
+		Reader r = new StringReader("<<<=<>>>=>~~=");
+		Scanner s = new Scanner(r);
+		Token t;
+		show(t= s.getNext()); 
+		assertEquals(BIT_SHIFTL, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(REL_LE, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(REL_LT, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(BIT_SHIFTR, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(REL_GE, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(REL_GT, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(BIT_XOR, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(REL_NOTEQ, t.kind);
+		show(t= s.getNext());
+		assertEquals(EOF, t.kind);
+	}
+	
+	@Test 
+	void test7() throws Exception {
+		Reader r = new StringReader("(){}[]") ;
+		Scanner s = new Scanner(r);
+		Token t;
+		show(t= s.getNext()); 
+		assertEquals(LPAREN, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(RPAREN, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(LCURLY, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(RCURLY, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(LSQUARE, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(RSQUARE, t.kind);
+		show(t= s.getNext());
+		assertEquals(EOF, t.kind);
+	}
+	
+	@Test 
+	void test8() throws Exception {
+		Reader r = new StringReader(":::,;.....,.") ;
+		Scanner s = new Scanner(r);
+		Token t;
+		show(t= s.getNext()); 
+		assertEquals(COLONCOLON, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(COLON, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(COMMA, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(SEMI, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(DOTDOTDOT, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(DOTDOT, t.kind);
+		show(t= s.getNext());
+		assertEquals(COMMA, t.kind);
+		show(t= s.getNext());
+		assertEquals(DOT, t.kind);
+		show(t= s.getNext());
+		assertEquals(EOF, t.kind);
+	}
+	
 	/**
 	 * Another example.  This test case will fail with the provided code, but should pass in your completed Scanner.
 	 * @throws Exception

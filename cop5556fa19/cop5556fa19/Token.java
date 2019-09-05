@@ -39,39 +39,39 @@ public class Token {
 		KW_true,
 		KW_until,
 		KW_while,
-		OP_PLUS, // +
-		OP_MINUS, // -
-		OP_TIMES, // *
-		OP_DIV, // /
-		OP_MOD, // %
-		OP_POW, // ^
-		OP_HASH, // #
-		BIT_AMP, // &
-		BIT_XOR, // ~
-		BIT_OR,  //  |
-		BIT_SHIFTL, // <<
-		BIT_SHIFTR, //  >>
-		OP_DIVDIV, // //
-		REL_EQEQ,  // ==
-		REL_NOTEQ, // ~=
-		REL_LE, // <=
-		REL_GE, // >=
-		REL_LT, // <
-		REL_GT, // >
-		ASSIGN, // =
-		LPAREN, 
-		RPAREN,
-		LCURLY,
-		RCURLY,
-		LSQUARE,
-		RSQUARE,
-		COLONCOLON, // ::
-		SEMI,
-		COLON,
-		COMMA,
-		DOT,   // .
-		DOTDOT,  // ..
-		DOTDOTDOT, // ...
+		OP_PLUS, // + DONE
+		OP_MINUS, // - DONE need to consider comments
+		OP_TIMES, // * DONE
+		OP_DIV, // / DONE
+		OP_MOD, // % DONE
+		OP_POW, // ^ DONE
+		OP_HASH, // # DONE
+		BIT_AMP, // & DONE
+		BIT_XOR, // ~ DONE
+		BIT_OR,  //  | DONE
+		BIT_SHIFTL, // << DONE
+		BIT_SHIFTR, //  >> DONE
+		OP_DIVDIV, // // DONE
+		REL_EQEQ,  // == DONE
+		REL_NOTEQ, // ~= DONE
+		REL_LE, // <= DONE
+		REL_GE, // >= DONE
+		REL_LT, // < DONE
+		REL_GT, // > DONE
+		ASSIGN, // = DONE
+		LPAREN, // DONE
+		RPAREN, // DONE
+		LCURLY, // DONE
+		RCURLY, // DONE
+		LSQUARE, // DONE
+		RSQUARE, // DONE
+		COLONCOLON, // :: DONE
+		SEMI, // DONE
+		COLON, // DONE
+		COMMA, // DONE
+		DOT,   // . DONE
+		DOTDOT,  // .. DONE
+		DOTDOTDOT, // ... DONE
 		STRINGLIT, 
 		EOF;
 	}
