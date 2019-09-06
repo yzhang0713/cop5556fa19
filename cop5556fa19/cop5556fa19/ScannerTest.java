@@ -76,132 +76,211 @@ class ScannerTest {
 //	 * Example showing how to read the input from a file.  Otherwise it is the same as test1.
 //	 *
 //	 */
-//	@Test
-//	void test2() throws Exception {
-//		String file = "testInputFiles\\test2.input"; 
-//		Reader r = new BufferedReader(new FileReader(file));
-//		Scanner s = new Scanner(r);
-//        assertThrows(LexicalException.class, ()->{
-//		   s.getNext();
-//        });
-//	}
-	
-
-	@Test 
-	void test3() throws Exception {
-		Reader r = new StringReader("+-*%^#&~|");
+	@Test
+	void test2() throws Exception {
+		String file = "testInputFiles\\test2.input"; 
+		Reader r = new BufferedReader(new FileReader(file));
 		Scanner s = new Scanner(r);
 		Token t;
 		show(t= s.getNext()); 
-		assertEquals(OP_PLUS, t.kind);
+		assertEquals(KW_if, t.kind);
 		show(t= s.getNext()); 
-		assertEquals(OP_MINUS, t.kind);
+		assertEquals(LPAREN, t.kind);
 		show(t= s.getNext()); 
-		assertEquals(OP_TIMES, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(OP_MOD, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(OP_POW, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(OP_HASH, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(BIT_AMP, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(BIT_XOR, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(BIT_OR, t.kind);
-		show(t= s.getNext());
-		assertEquals(EOF, t.kind);
-	}
-	
-	@Test 
-	void test5() throws Exception {
-		Reader r = new StringReader("===///");
-		Scanner s = new Scanner(r);
-		Token t;
+		assertEquals(NAME, t.kind);
 		show(t= s.getNext()); 
 		assertEquals(REL_EQEQ, t.kind);
 		show(t= s.getNext()); 
-		assertEquals(ASSIGN, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(OP_DIVDIV, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(OP_DIV, t.kind);
-		show(t= s.getNext());
-		assertEquals(EOF, t.kind);
-	}
-	
-	@Test 
-	void test6() throws Exception {
-		Reader r = new StringReader("<<<=<>>>=>~~=");
-		Scanner s = new Scanner(r);
-		Token t;
-		show(t= s.getNext()); 
-		assertEquals(BIT_SHIFTL, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(REL_LE, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(REL_LT, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(BIT_SHIFTR, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(REL_GE, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(REL_GT, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(BIT_XOR, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(REL_NOTEQ, t.kind);
-		show(t= s.getNext());
-		assertEquals(EOF, t.kind);
-	}
-	
-	@Test 
-	void test7() throws Exception {
-		Reader r = new StringReader("(){}[]") ;
-		Scanner s = new Scanner(r);
-		Token t;
-		show(t= s.getNext()); 
-		assertEquals(LPAREN, t.kind);
+		assertEquals(INTLIT, t.kind);
 		show(t= s.getNext()); 
 		assertEquals(RPAREN, t.kind);
 		show(t= s.getNext()); 
 		assertEquals(LCURLY, t.kind);
 		show(t= s.getNext()); 
+		assertEquals(NAME, t.kind);
+		show(t= s.getNext()); 
 		assertEquals(RCURLY, t.kind);
 		show(t= s.getNext()); 
-		assertEquals(LSQUARE, t.kind);
+		assertEquals(KW_end, t.kind);
 		show(t= s.getNext()); 
-		assertEquals(RSQUARE, t.kind);
-		show(t= s.getNext());
 		assertEquals(EOF, t.kind);
 	}
 	
-	@Test 
-	void test8() throws Exception {
-		Reader r = new StringReader(":::,;.....,.") ;
-		Scanner s = new Scanner(r);
-		Token t;
-		show(t= s.getNext()); 
-		assertEquals(COLONCOLON, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(COLON, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(COMMA, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(SEMI, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(DOTDOTDOT, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(DOTDOT, t.kind);
-		show(t= s.getNext());
-		assertEquals(COMMA, t.kind);
-		show(t= s.getNext());
-		assertEquals(DOT, t.kind);
-		show(t= s.getNext());
-		assertEquals(EOF, t.kind);
-	}
-	
+
+//	@Test 
+//	void test3() throws Exception {
+//		Reader r = new StringReader("+-*%^#&~|");
+//		Scanner s = new Scanner(r);
+//		Token t;
+//		show(t= s.getNext()); 
+//		assertEquals(OP_PLUS, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(OP_MINUS, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(OP_TIMES, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(OP_MOD, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(OP_POW, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(OP_HASH, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(BIT_AMP, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(BIT_XOR, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(BIT_OR, t.kind);
+//		show(t= s.getNext());
+//		assertEquals(EOF, t.kind);
+//	}
+//	
+//	@Test 
+//	void test5() throws Exception {
+//		Reader r = new StringReader("===///");
+//		Scanner s = new Scanner(r);
+//		Token t;
+//		show(t= s.getNext()); 
+//		assertEquals(REL_EQEQ, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(ASSIGN, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(OP_DIVDIV, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(OP_DIV, t.kind);
+//		show(t= s.getNext());
+//		assertEquals(EOF, t.kind);
+//	}
+//	
+//	@Test 
+//	void test6() throws Exception {
+//		Reader r = new StringReader("<<<=<>>>=>~~=");
+//		Scanner s = new Scanner(r);
+//		Token t;
+//		show(t= s.getNext()); 
+//		assertEquals(BIT_SHIFTL, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(REL_LE, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(REL_LT, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(BIT_SHIFTR, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(REL_GE, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(REL_GT, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(BIT_XOR, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(REL_NOTEQ, t.kind);
+//		show(t= s.getNext());
+//		assertEquals(EOF, t.kind);
+//	}
+//	
+//	@Test 
+//	void test7() throws Exception {
+//		Reader r = new StringReader("(){}[]") ;
+//		Scanner s = new Scanner(r);
+//		Token t;
+//		show(t= s.getNext()); 
+//		assertEquals(LPAREN, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(RPAREN, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(LCURLY, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(RCURLY, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(LSQUARE, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(RSQUARE, t.kind);
+//		show(t= s.getNext());
+//		assertEquals(EOF, t.kind);
+//	}
+//	
+//	@Test 
+//	void test8() throws Exception {
+//		Reader r = new StringReader(":::,;.....,.") ;
+//		Scanner s = new Scanner(r);
+//		Token t;
+//		show(t= s.getNext()); 
+//		assertEquals(COLONCOLON, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(COLON, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(COMMA, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(SEMI, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(DOTDOTDOT, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(DOTDOT, t.kind);
+//		show(t= s.getNext());
+//		assertEquals(COMMA, t.kind);
+//		show(t= s.getNext());
+//		assertEquals(DOT, t.kind);
+//		show(t= s.getNext());
+//		assertEquals(EOF, t.kind);
+//	}
+//	
+//	@Test 
+//	void test9() throws Exception {
+//		Reader r = new StringReader("08401 and break do else elseif end false for function goto if in local nil not or repeat return then true until while s0s") ;
+//		Scanner s = new Scanner(r);
+//		Token t;
+//		show(t= s.getNext()); 
+//		assertEquals(INTLIT, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(INTLIT, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_and, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_break, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_do, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_else, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_elseif, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_end, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_false, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_for, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_function, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_goto, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_if, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_in, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_local, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_nil, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_not, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_or, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_repeat, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_return, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_then, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_true, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_until, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_while, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(NAME, t.kind);
+//		show(t= s.getNext());
+//		assertEquals(EOF, t.kind);
+//	}
+//	
 	/**
 	 * Another example.  This test case will fail with the provided code, but should pass in your completed Scanner.
 	 * @throws Exception

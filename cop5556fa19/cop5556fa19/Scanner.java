@@ -34,9 +34,12 @@ public class Scanner {
 		HAVE_DT, // .
 		HAVE_DDT, // ..
 		HAVE_CR, // \r
+		HAVE_SQT, // '
+		HAVE_DQT, // "
 		IN_NAME,
 		IN_INTLIT,
-		IN_STRLIT;
+		IN_STRLIT,
+		IN_COMMNT;
 	}
 	
 	Reader r;
@@ -80,7 +83,7 @@ public class Scanner {
 	
 	public Token getNext() throws Exception {
 			Token t = null; // Initialize Token
-			StringBuilder sb; // Initialize StringBuilder for the text of Token
+			StringBuilder sb = null; // Initialize StringBuilder for the text of Token
 			int pos = -1;
 			int line = -1; // Initialize position and line number
 			State state = State.START; // Initialize state
@@ -100,7 +103,6 @@ public class Scanner {
 							case 0: {getChar();} break;
 							case -1: {t = new Token(EOF,"eof",pos,line);} break;
 							case '+': {t = new Token(OP_PLUS,"+",pos,line); getChar();} break;
-							case '-': {t = new Token(OP_MINUS,"-",pos,line); getChar();} break;
 							case '*': {t = new Token(OP_TIMES,"*",pos,line); getChar();} break;
 							case '%': {t = new Token(OP_MOD,"%",pos,line); getChar();} break;
 							case '^': {t = new Token(OP_POW,"^",pos,line); getChar();} break;
@@ -122,7 +124,31 @@ public class Scanner {
 							case '>': {state = State.HAVE_GR; getChar();} break;
 							case ':': {state = State.HAVE_CL; getChar();} break;
 							case '.': {state = State.HAVE_DT; getChar();} break;
-							default : break;
+							default : {
+								if (Character.isDigit(ch)) {
+									switch (ch) {
+										case '0': {t = new Token(INTLIT,"0",pos,line); getChar();} break;
+										default : {
+											state = State.IN_INTLIT;
+											sb = new StringBuilder();
+											sb.append((char)ch);
+											getChar();
+										} break;
+									}
+								} else if (Character.isJavaIdentifierStart(ch)) {
+									state = State.IN_NAME;
+									sb = new StringBuilder();
+									sb.append((char)ch);
+									getChar();
+								} else if (ch == '-') {
+									switch (ch) {
+										case '-': {state = State.IN_COMMNT; getChar();} break;
+										default : {t = new Token(OP_MINUS,"-",pos,line);} break;
+									}
+								} else {
+									throw new LexicalException("Invilid input at "); // need more info
+								}
+							} break;
 						}
 					} break;
 					case HAVE_TL: {
@@ -175,6 +201,47 @@ public class Scanner {
 							default : {t = new Token(DOTDOT,"..",pos,line); state = State.START;} break;
 						}
 					} break;
+					case IN_INTLIT: {
+						if (Character.isDigit(ch)) {
+							sb.append((char)ch);
+							getChar();
+						} else {t = new Token(INTLIT,sb.toString(),pos,line); state = State.START;}							
+					} break;
+					case IN_NAME: {
+						if (Character.isJavaIdentifierPart(ch)) {
+							sb.append((char)ch);
+							getChar();
+						} else {
+							String str;
+							str = sb.toString();							
+							switch (str) {
+								case "and": {t = new Token(KW_and,str,pos,line); state = State.START;} break;
+								case "break": {t = new Token(KW_break,str,pos,line); state = State.START;} break;
+								case "do": {t = new Token(KW_do,str,pos,line); state = State.START;} break;
+								case "else": {t = new Token(KW_else,str,pos,line); state = State.START;} break;
+								case "elseif": {t = new Token(KW_elseif,str,pos,line); state = State.START;} break;
+								case "end": {t = new Token(KW_end,str,pos,line); state = State.START;} break;
+								case "false": {t = new Token(KW_false,str,pos,line); state = State.START;} break;
+								case "for": {t = new Token(KW_for,str,pos,line); state = State.START;} break;
+								case "function": {t = new Token(KW_function,str,pos,line); state = State.START;} break;
+								case "goto": {t = new Token(KW_goto,str,pos,line); state = State.START;} break;
+								case "if": {t = new Token(KW_if,str,pos,line); state = State.START;} break;
+								case "in": {t = new Token(KW_in,str,pos,line); state = State.START;} break;
+								case "local": {t = new Token(KW_local,str,pos,line); state = State.START;} break;
+								case "nil": {t = new Token(KW_nil,str,pos,line); state = State.START;} break;
+								case "not": {t = new Token(KW_not,str,pos,line); state = State.START;} break;
+								case "or": {t = new Token(KW_or,str,pos,line); state = State.START;} break;
+								case "repeat": {t = new Token(KW_repeat,str,pos,line); state = State.START;} break;
+								case "return": {t = new Token(KW_return,str,pos,line); state = State.START;} break;
+								case "then": {t = new Token(KW_then,str,pos,line); state = State.START;} break;
+								case "true": {t = new Token(KW_true,str,pos,line); state = State.START;} break;
+								case "until": {t = new Token(KW_until,str,pos,line); state = State.START;} break;
+								case "while": {t = new Token(KW_while,str,pos,line); state = State.START;} break;
+								default : {t = new Token(NAME,str,pos,line); state = State.START;} break;
+							}
+						}
+					} break;
+					case IN_COMMNT: {if (ch == '\n' || ch == '\r') {state = State.START; getChar();} else {getChar();}} break;
 					default : break;
 				}
 			}

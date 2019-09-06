@@ -15,30 +15,30 @@ package cop5556fa19;
 
 public class Token {
 	public enum Kind {
-		NAME,
-		INTLIT,
-		KW_and,
-		KW_break,
-		KW_do,
-		KW_else,
-		KW_elseif,
-		KW_end,
-		KW_false,
-		KW_for,
-		KW_function,
-		KW_goto,
-		KW_if,
-		KW_in,
-		KW_local,
-		KW_nil,
-		KW_not,
-		KW_or,
-		KW_repeat,
-		KW_return,
-		KW_then,
-		KW_true,
-		KW_until,
-		KW_while,
+		NAME, // DONE
+		INTLIT, // DONE
+		KW_and, // DONE
+		KW_break, // DONE
+		KW_do, // DONE
+		KW_else, // DONE
+		KW_elseif, // DONE
+		KW_end, // DONE
+		KW_false, // DONE
+		KW_for, // DONE
+		KW_function, // DONE
+		KW_goto, // DONE
+		KW_if, // DONE
+		KW_in, // DONE
+		KW_local, // DONE
+		KW_nil, // DONE
+		KW_not, // DONE
+		KW_or, // DONE
+		KW_repeat, // DONE
+		KW_return, // DONE
+		KW_then, // DONE
+		KW_true, // DONE
+		KW_until, // DONE
+		KW_while, // DONE
 		OP_PLUS, // + DONE
 		OP_MINUS, // - DONE need to consider comments
 		OP_TIMES, // * DONE
@@ -73,7 +73,7 @@ public class Token {
 		DOTDOT,  // .. DONE
 		DOTDOTDOT, // ... DONE
 		STRINGLIT, 
-		EOF;
+		EOF; // DONE
 	}
 	
 	public final Kind kind;
