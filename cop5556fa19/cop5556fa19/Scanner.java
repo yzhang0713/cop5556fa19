@@ -145,6 +145,14 @@ public class Scanner {
 										case '-': {state = State.IN_COMMNT; getChar();} break;
 										default : {t = new Token(OP_MINUS,"-",pos,line);} break;
 									}
+								} else if (ch == 34) {
+									state = State.HAVE_DQT;
+									sb = new StringBuilder();
+									getChar();
+								} else if (ch == 39) {
+									state = State.HAVE_SQT;
+									sb = new StringBuilder();
+									getChar();
 								} else {
 									throw new LexicalException("Invilid input at "); // need more info
 								}
@@ -242,6 +250,44 @@ public class Scanner {
 						}
 					} break;
 					case IN_COMMNT: {if (ch == '\n' || ch == '\r') {state = State.START; getChar();} else {getChar();}} break;
+					case HAVE_DQT: {
+						if (ch >= 0 && ch <= 127) {
+							if (ch == 34) {
+								if (sb.length() == 0) {throw new LexicalException("Zero length string literal at ");}
+								else {t = new Token(STRINGLIT,sb.toString(),pos,line); state = State.START; getChar();}
+							} else if (ch == 39) {
+								throw new LexicalException("Unbalanced qutation mark at");
+							} else if (ch == 92) {
+								sb.append((char)ch);
+								getChar();
+								if (ch=='a'||ch=='b'||ch=='f'||ch=='n'||ch=='r'||ch=='v'||ch=='t'||ch==34||ch==39||ch==92) {
+									sb.append((char)ch);
+									getChar();
+								} else {
+									throw new LexicalException("Should not contain backslash in string literal");
+								}
+							} else {sb.append((char)ch); getChar();}
+						} else {throw new LexicalException("Invalid input at ");}
+					} break;
+					case HAVE_SQT: {
+						if (ch >= 0 && ch <= 127) {
+							if (ch == 39) {
+								if (sb.length() == 0) {throw new LexicalException("Zero length string literal at ");}
+								else {t = new Token(STRINGLIT,sb.toString(),pos,line); state = State.START; getChar();}
+							} else if (ch == 34) {
+								throw new LexicalException("Unbalanced apostrophe at");
+							} else if (ch == 92) {
+								sb.append((char)ch);
+								getChar();
+								if (ch=='a'||ch=='b'||ch=='f'||ch=='n'||ch=='r'||ch=='v'||ch=='t'||ch==34||ch==39||ch==92) {
+									sb.append((char)ch);
+									getChar();
+								} else {
+									throw new LexicalException("Should not contain backslash in string literal");
+								}
+							} else {sb.append((char)ch); getChar();}
+						} else {throw new LexicalException("Invalid input at ");}
+					} break;
 					default : break;
 				}
 			}

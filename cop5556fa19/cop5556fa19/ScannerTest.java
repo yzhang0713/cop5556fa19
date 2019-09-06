@@ -103,6 +103,8 @@ class ScannerTest {
 		show(t= s.getNext()); 
 		assertEquals(KW_end, t.kind);
 		show(t= s.getNext()); 
+		assertEquals(STRINGLIT, t.kind);
+		show(t= s.getNext()); 
 		assertEquals(EOF, t.kind);
 	}
 	

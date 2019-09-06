@@ -40,7 +40,7 @@ public class Token {
 		KW_until, // DONE
 		KW_while, // DONE
 		OP_PLUS, // + DONE
-		OP_MINUS, // - DONE need to consider comments
+		OP_MINUS, // - DONE
 		OP_TIMES, // * DONE
 		OP_DIV, // / DONE
 		OP_MOD, // % DONE
@@ -72,7 +72,7 @@ public class Token {
 		DOT,   // . DONE
 		DOTDOT,  // .. DONE
 		DOTDOTDOT, // ... DONE
-		STRINGLIT, 
+		STRINGLIT, // DONE
 		EOF; // DONE
 	}
 	

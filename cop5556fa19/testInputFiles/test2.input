@@ -4,3 +4,4 @@ if (current == 1) {
 test
 }
 end
+'string literal test \f \n \' \" '
