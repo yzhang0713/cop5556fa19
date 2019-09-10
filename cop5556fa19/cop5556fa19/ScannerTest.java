@@ -48,11 +48,11 @@ class ScannerTest {
 	  */
 	@Test 
 	void test0() throws Exception {
-		Reader r = new StringReader("");
+		Reader r = new StringReader("\"abs\"");
 		Scanner s = new Scanner(r);
 		Token t;
 		show(t= s.getNext()); 
-		assertEquals(EOF, t.kind);
+		assertEquals(STRINGLIT, t.kind);
 		show(t= s.getNext());
 		assertEquals(EOF, t.kind);
 	}
@@ -107,8 +107,17 @@ class ScannerTest {
 		show(t= s.getNext()); 
 		assertEquals(EOF, t.kind);
 	}
+//	
+	@Test
+	void test10() throws Exception {
+		Reader r = new StringReader("2625664586213");
+		Scanner s = new Scanner(r);
+        assertThrows(LexicalException.class, ()->{
+		   s.getNext();
+        });
+	}
 	
-
+	
 //	@Test 
 //	void test3() throws Exception {
 //		Reader r = new StringReader("+-*%^#&~|");

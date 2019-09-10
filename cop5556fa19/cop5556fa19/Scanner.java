@@ -148,13 +148,15 @@ public class Scanner {
 								} else if (ch == 34) {
 									state = State.HAVE_DQT;
 									sb = new StringBuilder();
+									sb.append((char)34);
 									getChar();
 								} else if (ch == 39) {
 									state = State.HAVE_SQT;
 									sb = new StringBuilder();
+									sb.append((char)34);
 									getChar();
 								} else {
-									throw new LexicalException("Invilid input at "); // need more info
+									throw new LexicalException("Invilid input at line " + (line+1) + " position " + (pos+1)); // need more info
 								}
 							} break;
 						}
@@ -213,7 +215,16 @@ public class Scanner {
 						if (Character.isDigit(ch)) {
 							sb.append((char)ch);
 							getChar();
-						} else {t = new Token(INTLIT,sb.toString(),pos,line); state = State.START;}							
+						} else {
+							String str;
+							str = sb.toString();
+							try {
+								Integer.parseInt(str);
+								t = new Token(INTLIT,str,pos,line); state = State.START;
+							} catch (NumberFormatException ex) {
+								throw new LexicalException("The inputted integer is out of range at line " + (line+1) + " position " + (pos+1));
+							}
+						}							
 					} break;
 					case IN_NAME: {
 						if (Character.isJavaIdentifierPart(ch)) {
@@ -253,40 +264,52 @@ public class Scanner {
 					case HAVE_DQT: {
 						if (ch >= 0 && ch <= 127) {
 							if (ch == 34) {
-								if (sb.length() == 0) {throw new LexicalException("Zero length string literal at ");}
-								else {t = new Token(STRINGLIT,sb.toString(),pos,line); state = State.START; getChar();}
+								if (sb.length() == 0) {throw new LexicalException("Zero length string literal at line " + (line+1) + " position " + (pos+1));}
+								else {sb.append((char)34); t = new Token(STRINGLIT,sb.toString(),pos,line); state = State.START; getChar();}
 							} else if (ch == 39) {
-								throw new LexicalException("Unbalanced qutation mark at");
+								throw new LexicalException("Unbalanced qutation mark at line " + (line+1) + " position " + (pos+1));
 							} else if (ch == 92) {
-								sb.append((char)ch);
 								getChar();
-								if (ch=='a'||ch=='b'||ch=='f'||ch=='n'||ch=='r'||ch=='v'||ch=='t'||ch==34||ch==39||ch==92) {
-									sb.append((char)ch);
-									getChar();
-								} else {
-									throw new LexicalException("Should not contain backslash in string literal");
+								switch (ch) {
+									case 'a': {sb.append("\u0007"); getChar();} break;
+									case 'b': {sb.append("\b"); getChar();} break;
+									case 'f': {sb.append("\f"); getChar();} break;
+									case 'n': {sb.append("\n"); getChar();} break;
+									case 'r': {sb.append("\r"); getChar();} break;
+									case 't': {sb.append("\t"); getChar();} break;
+									case 'v': {sb.append("\u000B"); getChar();} break;
+									case 34: {sb.append("\""); getChar();} break;
+									case 39: {sb.append("\'"); getChar();} break;
+									case 92: {sb.append("\\"); getChar();} break;
+									default: {throw new LexicalException("Should not contain backslash in string literal at line " + (line+1) + " position " + (pos+1));} 
 								}
 							} else {sb.append((char)ch); getChar();}
-						} else {throw new LexicalException("Invalid input at ");}
+						} else {throw new LexicalException("Invalid input at line " + (line+1) + " position " + (pos+1));}
 					} break;
 					case HAVE_SQT: {
 						if (ch >= 0 && ch <= 127) {
 							if (ch == 39) {
-								if (sb.length() == 0) {throw new LexicalException("Zero length string literal at ");}
-								else {t = new Token(STRINGLIT,sb.toString(),pos,line); state = State.START; getChar();}
+								if (sb.length() == 0) {throw new LexicalException("Zero length string literal at line " + (line+1) + " position " + (pos+1));}
+								else {sb.append((char)34); t = new Token(STRINGLIT,sb.toString(),pos,line); state = State.START; getChar();}
 							} else if (ch == 34) {
-								throw new LexicalException("Unbalanced apostrophe at");
+								throw new LexicalException("Unbalanced apostrophe at line " + (line+1) + " position " + (pos+1));
 							} else if (ch == 92) {
-								sb.append((char)ch);
 								getChar();
-								if (ch=='a'||ch=='b'||ch=='f'||ch=='n'||ch=='r'||ch=='v'||ch=='t'||ch==34||ch==39||ch==92) {
-									sb.append((char)ch);
-									getChar();
-								} else {
-									throw new LexicalException("Should not contain backslash in string literal");
+								switch (ch) {
+									case 'a': {sb.append("\u0007"); getChar();} break;
+									case 'b': {sb.append("\b"); getChar();} break;
+									case 'f': {sb.append("\f"); getChar();} break;
+									case 'n': {sb.append("\n"); getChar();} break;
+									case 'r': {sb.append("\r"); getChar();} break;
+									case 't': {sb.append("\t"); getChar();} break;
+									case 'v': {sb.append("\u000B"); getChar();} break;
+									case 34: {sb.append("\""); getChar();} break;
+									case 39: {sb.append("\'"); getChar();} break;
+									case 92: {sb.append("\\"); getChar();} break;
+									default: {throw new LexicalException("Should not contain backslash in string literal at line " + (line+1) + " position " + (pos+1));} 
 								}
 							} else {sb.append((char)ch); getChar();}
-						} else {throw new LexicalException("Invalid input at ");}
+						} else {throw new LexicalException("Invalid input at line " + (line+1) + " position " + (pos+1));}
 					} break;
 					default : break;
 				}
