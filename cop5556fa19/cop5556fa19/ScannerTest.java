@@ -48,13 +48,27 @@ class ScannerTest {
 	  */
 	@Test 
 	void test0() throws Exception {
-		Reader r = new StringReader("\"abs\"");
+		Reader r = new StringReader("-+/*%");
 		Scanner s = new Scanner(r);
 		Token t;
 		show(t= s.getNext()); 
-		assertEquals(STRINGLIT, t.kind);
-		show(t= s.getNext());
-		assertEquals(EOF, t.kind);
+		assertEquals(OP_MINUS, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(OP_PLUS, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(OP_DIV, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(OP_TIMES, t.kind);
+		show(t= s.getNext()); 
+		assertEquals(OP_MOD, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(INTLIT, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(INTLIT, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(INTLIT, t.kind);
+//		show(t= s.getNext());
+//		assertEquals(EOF, t.kind);
 	}
 
 	/**
@@ -76,46 +90,46 @@ class ScannerTest {
 //	 * Example showing how to read the input from a file.  Otherwise it is the same as test1.
 //	 *
 //	 */
-	@Test
-	void test2() throws Exception {
-		String file = "testInputFiles\\test2.input"; 
-		Reader r = new BufferedReader(new FileReader(file));
-		Scanner s = new Scanner(r);
-		Token t;
-		show(t= s.getNext()); 
-		assertEquals(KW_if, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(LPAREN, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(NAME, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(REL_EQEQ, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(INTLIT, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(RPAREN, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(LCURLY, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(NAME, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(RCURLY, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(KW_end, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(STRINGLIT, t.kind);
-		show(t= s.getNext()); 
-		assertEquals(EOF, t.kind);
-	}
+//	@Test
+//	void test2() throws Exception {
+//		String file = "testInputFiles\\test2.input"; 
+//		Reader r = new BufferedReader(new FileReader(file));
+//		Scanner s = new Scanner(r);
+//		Token t;
+//		show(t= s.getNext()); 
+//		assertEquals(KW_if, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(LPAREN, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(NAME, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(REL_EQEQ, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(INTLIT, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(RPAREN, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(LCURLY, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(NAME, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(RCURLY, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(KW_end, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(STRINGLIT, t.kind);
+//		show(t= s.getNext()); 
+//		assertEquals(EOF, t.kind);
+//	}
 //	
-	@Test
-	void test10() throws Exception {
-		Reader r = new StringReader("2625664586213");
-		Scanner s = new Scanner(r);
-        assertThrows(LexicalException.class, ()->{
-		   s.getNext();
-        });
-	}
+//	@Test
+//	void test10() throws Exception {
+//		Reader r = new StringReader("2625664586213");
+//		Scanner s = new Scanner(r);
+//        assertThrows(LexicalException.class, ()->{
+//		   s.getNext();
+//        });
+//	}
 	
 	
 //	@Test 

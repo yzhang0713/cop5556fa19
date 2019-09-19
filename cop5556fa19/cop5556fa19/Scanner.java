@@ -64,21 +64,20 @@ public class Scanner {
 	int ch;
 	
 	void getChar() throws IOException{
-//		System.out.println(ch);
-//		System.out.println(currPos);
-//		System.out.println(currLine);
 		// Based on the value of ch, update currPos and currLine
-		if (ch == '\n' || ch == '\r') {
+		if (ch == '\n') {	// LF case
 			currLine++;
-			currPos = -1;
+			ch = r.read();
+			currPos = 0;
+		} else if (ch == '\r') {	// CR and CR LF case
+			currLine++;
+			ch = r.read();
+			if (ch == '\n') {ch = r.read();}
+			currPos = 0;
+		} else {
+			ch = r.read();
+			currPos++;
 		}
-		// Read next character, update currPos
-		ch = r.read();
-		if (ch == '\n') { ch = r.read(); } // CR LF case
-		currPos++;
-//		System.out.println(ch);
-//		System.out.println(currPos);
-//		System.out.println(currLine);
 	}
 	
 	public Token getNext() throws Exception {
@@ -141,6 +140,7 @@ public class Scanner {
 									sb.append((char)ch);
 									getChar();
 								} else if (ch == '-') {
+									getChar();
 									switch (ch) {
 										case '-': {state = State.IN_COMMNT; getChar();} break;
 										default : {t = new Token(OP_MINUS,"-",pos,line);} break;
@@ -260,7 +260,7 @@ public class Scanner {
 							}
 						}
 					} break;
-					case IN_COMMNT: {if (ch == '\n' || ch == '\r') {state = State.START; getChar();} else {getChar();}} break;
+					case IN_COMMNT: {if (ch == '\n' || ch == '\r' || ch == -1) {state = State.START; getChar();} else {getChar();}} break;
 					case HAVE_DQT: {
 						if (ch >= 0 && ch <= 127) {
 							if (ch == 34) {
