@@ -1,79 +1,82 @@
-/**
+/* *
  * Developed  for the class project in COP5556 Programming Language Principles 
  * at the University of Florida, Fall 2019.
  * 
  * This software is solely for the educational benefit of students 
  * enrolled in the course during the Fall 2019 semester.  
  * 
- * This software, and any software derived from it,  may not be shared with others or posted to public web sites or repositories,
+ * This software, and any software derived from it,  may not be shared with others or posted to public web sites,
  * either during the course or afterwards.
  * 
  *  @Beverly A. Sanders, 2019
  */
 
+//Modified 9/14 to override equals and hashcode.  Line and pos are not included in equality checks.  
+
+
 package cop5556fa19;
 
 public class Token {
 	public enum Kind {
-		NAME, // DONE
-		INTLIT, // DONE
-		KW_and, // DONE
-		KW_break, // DONE
-		KW_do, // DONE
-		KW_else, // DONE
-		KW_elseif, // DONE
-		KW_end, // DONE
-		KW_false, // DONE
-		KW_for, // DONE
-		KW_function, // DONE
-		KW_goto, // DONE
-		KW_if, // DONE
-		KW_in, // DONE
-		KW_local, // DONE
-		KW_nil, // DONE
-		KW_not, // DONE
-		KW_or, // DONE
-		KW_repeat, // DONE
-		KW_return, // DONE
-		KW_then, // DONE
-		KW_true, // DONE
-		KW_until, // DONE
-		KW_while, // DONE
-		OP_PLUS, // + DONE
-		OP_MINUS, // - DONE
-		OP_TIMES, // * DONE
-		OP_DIV, // / DONE
-		OP_MOD, // % DONE
-		OP_POW, // ^ DONE
-		OP_HASH, // # DONE
-		BIT_AMP, // & DONE
-		BIT_XOR, // ~ DONE
-		BIT_OR,  //  | DONE
-		BIT_SHIFTL, // << DONE
-		BIT_SHIFTR, //  >> DONE
-		OP_DIVDIV, // // DONE
-		REL_EQEQ,  // == DONE
-		REL_NOTEQ, // ~= DONE
-		REL_LE, // <= DONE
-		REL_GE, // >= DONE
-		REL_LT, // < DONE
-		REL_GT, // > DONE
-		ASSIGN, // = DONE
-		LPAREN, // DONE
-		RPAREN, // DONE
-		LCURLY, // DONE
-		RCURLY, // DONE
-		LSQUARE, // DONE
-		RSQUARE, // DONE
-		COLONCOLON, // :: DONE
-		SEMI, // DONE
-		COLON, // DONE
-		COMMA, // DONE
-		DOT,   // . DONE
-		DOTDOT,  // .. DONE
-		DOTDOTDOT, // ... DONE
-		STRINGLIT, // DONE
-		EOF; // DONE
+		NAME,
+		INTLIT,
+		KW_and,
+		KW_break,
+		KW_do,
+		KW_else,
+		KW_elseif,
+		KW_end,
+		KW_false,
+		KW_for,
+		KW_function,
+		KW_goto,
+		KW_if,
+		KW_in,
+		KW_local,
+		KW_nil,
+		KW_not,
+		KW_or,
+		KW_repeat,
+		KW_return,
+		KW_then,
+		KW_true,
+		KW_until,
+		KW_while,
+		OP_PLUS,
+		OP_MINUS,
+		OP_TIMES,
+		OP_DIV,
+		OP_MOD,
+		OP_POW,
+		OP_HASH,
+		BIT_AMP,
+		BIT_XOR,
+		BIT_OR,
+		BIT_SHIFTL,
+		BIT_SHIFTR,
+		OP_DIVDIV,
+		REL_EQEQ,
+		REL_NOTEQ,
+		REL_LE,
+		REL_GE,
+		REL_LT,
+		REL_GT,
+		ASSIGN,
+		LPAREN,
+		RPAREN,
+		LCURLY,
+		RCURLY,
+		LSQUARE,
+		RSQUARE,
+		COLONCOLON,
+		SEMI,
+		COLON,
+		COMMA,
+		DOT,
+		DOTDOT,
+		DOTDOTDOT,
+		STRINGLIT,
+		EOF
 	}
 	
 	public final Kind kind;
@@ -90,10 +93,51 @@ public class Token {
 		this.line = line;
 	}
 
+
+
+
+	
 	@Override
 	public String toString() {
 		return "Token [kind=" + kind + ", text=" + text + ", pos=" + (pos+1) + ", line=" + (line+1) + "]";
 	}
+
+
+
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((kind == null) ? 0 : kind.hashCode());
+		result = prime * result + line;
+		return result;
+	}
+
+
+
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Token other = (Token) obj;
+		if (kind != other.kind)
+			return false;
+		if (line != other.line)
+			return false;
+		return true;
+	}
+
+
+
+
 
 	/*precondition:  kind is NUMLIT */
 	public int getIntVal() {
@@ -101,12 +145,12 @@ public class Token {
 	}
 	
 	/*precondition:  kind is STRINGLIT */
-	public String getStringVal() {
+	String getStringVal() {
 		return text.substring(1,text.length()-1);  //remove delimiters
 	}
 	
 	/*precondition:   kind is NAME */
-	public String getName() {
+	String getName() {
 		return text;
 	}
 }
