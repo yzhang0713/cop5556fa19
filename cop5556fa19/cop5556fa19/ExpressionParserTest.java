@@ -18,6 +18,7 @@ import static cop5556fa19.Token.Kind.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.beans.Expression;
 import java.io.Reader;
 import java.io.StringReader;
 import org.junit.jupiter.api.Test;
@@ -90,7 +91,31 @@ class ExpressionParserTest {
 		assertEquals(ExpString.class, e.getClass());
 		assertEquals("string", ((ExpString) e).v);
 	}
+	
+	@Test
+	void testString1() throws Exception {
+		String input = "(\"string\")";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpString.class, e.getClass());
+		assertEquals("string", ((ExpString) e).v);
+	}
 
+	@Test
+	void testInt() throws Exception {
+		String input = "102";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpInt.class, e.getClass());
+		assertEquals(102, ((ExpInt) e).v);
+	}
+	
+	@Test
+	void testInt1() throws Exception {
+		String input = "(201)";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpInt.class, e.getClass());
+		assertEquals(201, ((ExpInt) e).v);
+	}
+	
 	@Test
 	void testBoolean0() throws Exception {
 		String input = "true";
@@ -105,7 +130,13 @@ class ExpressionParserTest {
 		assertEquals(ExpFalse.class, e.getClass());
 	}
 
-
+	@Test
+	void testNil() throws Exception {
+		String input = "nil";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpNil.class, e.getClass());
+	}
+	
 	@Test
 	void testBinary0() throws Exception {
 		String input = "1 + 2";
@@ -125,14 +156,27 @@ class ExpressionParserTest {
 	}
 	
 	@Test
+	void testUnary2() throws Exception {
+		String input = "not#~-2";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeExpUnary(
+				KW_not
+				, Expressions.makeExpUnary(
+						OP_HASH
+						, Expressions.makeExpUnary(
+								BIT_XOR
+								, Expressions.makeExpUnary(OP_MINUS, 2))));
+		show("expected="+expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
 	void testUnary1() throws Exception {
 		String input = "-*2\n";
 		assertThrows(SyntaxException.class, () -> {
 		Exp e = parseAndShow(input);
 		});	
 	}
-	
-
 	
 	@Test
 	void testRightAssoc() throws Exception {
@@ -142,6 +186,18 @@ class ExpressionParserTest {
 				Expressions.makeExpString("\"concat\"")
 				, DOTDOT
 				, Expressions.makeBinary("\"is\"",DOTDOT,"\"right associative\""));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testRightAssoc1() throws Exception {
+		String input = "3 ^ 5 ^ 7";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeInt(3)
+				, OP_POW
+				, Expressions.makeBinary(5, OP_POW, 7));
 		show("expected=" + expected);
 		assertEquals(expected,e);
 	}
@@ -159,6 +215,163 @@ class ExpressionParserTest {
 		show("expected=" + expected);
 		assertEquals(expected,e);
 		
+	}
+	
+	@Test
+	void testLeftAssocOr() throws Exception {
+		String input = "1 or 2 or 3";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(1, KW_or, 2)
+				, KW_or
+				, Expressions.makeInt(3));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testLeftAssocAnd() throws Exception {
+		String input = "1 and 2 and 3";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(1, KW_and, 2)
+				, KW_and
+				, Expressions.makeInt(3));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testLeftAssocBitor() throws Exception {
+		String input = "1 | 2 | 3";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(1, BIT_OR, 2)
+				, BIT_OR
+				, Expressions.makeInt(3));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testLeftAssocBitxor() throws Exception {
+		String input = "1 ~ 2 ~ 3";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(1, BIT_XOR, 2)
+				, BIT_XOR
+				, Expressions.makeInt(3));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testLeftAssocBitamp() throws Exception {
+		String input = "1 & 2 & 3";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(1, BIT_AMP, 2)
+				, BIT_AMP
+				, Expressions.makeInt(3));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testLeftAssocBitshi() throws Exception {
+		String input = "1 >> 2 << 3 >> 4";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(
+						Expressions.makeBinary(1, BIT_SHIFTR, 2)
+						, BIT_SHIFTL
+						, Expressions.makeInt(3))
+				, BIT_SHIFTR
+				, Expressions.makeInt(4));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testLeftAssocAdd() throws Exception {
+		String input = "1 + 2 - 3 + 4";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(
+						Expressions.makeBinary(1, OP_PLUS, 2)
+						, OP_MINUS
+						, Expressions.makeInt(3))
+				, OP_PLUS
+				, Expressions.makeInt(4));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testLeftAssocMul() throws Exception {
+		String input = "1 * 2 / 3 // 4 % 5 * 6";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(
+						Expressions.makeBinary(
+								Expressions.makeBinary(
+										Expressions.makeBinary(1, OP_TIMES, 2)
+										, OP_DIV
+										, Expressions.makeInt(3))
+								, OP_DIVDIV
+								, Expressions.makeInt(4))
+						, OP_MOD
+						, Expressions.makeInt(5))
+				, OP_TIMES
+				, Expressions.makeInt(6));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testLeftAssocCom() throws Exception {
+		String input = "1 < 2 > 3 <= 4 >= 5 ~= 6 == 7 < 8";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(
+						Expressions.makeBinary(
+								Expressions.makeBinary(
+										Expressions.makeBinary(
+												Expressions.makeBinary(
+														Expressions.makeBinary(1, REL_LT, 2)
+														, REL_GT
+														, Expressions.makeInt(3))
+												, REL_LE
+												, Expressions.makeInt(4))
+										, REL_GE
+										, Expressions.makeInt(5))
+								, REL_NOTEQ
+								, Expressions.makeInt(6))
+						, REL_EQEQ
+						, Expressions.makeInt(7))
+				, REL_LT
+				, Expressions.makeInt(8));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+		
+	@Test
+	void testPrecedence() throws Exception {
+		String input = "1 + 2 * 3";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeInt(1)
+				, OP_PLUS
+				, Expressions.makeBinary(2, OP_TIMES, 3));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testVarArg() throws Exception {
+		String input = "...";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpVarArgs.class, e.getClass());
 	}
 
 }
