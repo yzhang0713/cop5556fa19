@@ -19,7 +19,7 @@ import cop5556fa19.Token;
 
 public class FieldList extends ASTNode {
 
-	List<Field> fields;
+	public final List<Field> fields;
 
 	public FieldList(Token firstToken, List<Field> fields) {
 		super(firstToken);

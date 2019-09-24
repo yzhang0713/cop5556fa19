@@ -5,3 +5,6 @@
 /Token.class
 /package-info.class
 /Scanner$State.class
+/ExpressionParser$SyntaxException.class
+/ExpressionParser.class
+/ExpressionParserTest.class
