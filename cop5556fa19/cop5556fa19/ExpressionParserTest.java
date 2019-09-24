@@ -373,5 +373,65 @@ class ExpressionParserTest {
 		Exp e = parseAndShow(input);
 		assertEquals(ExpVarArgs.class, e.getClass());
 	}
+	
+	@Test
+	void testFunction0() throws Exception {
+		String input = "function ( x ) end";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpFunction.class, e.getClass());
+	}
+	
+	@Test
+	void testFunction1() throws Exception {
+		String input = "function ( x, y, z ) end";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpFunction.class, e.getClass());
+	}
 
+	@Test
+	void testFunction2() throws Exception {
+		String input = "function ( ... ) end";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpFunction.class, e.getClass());
+	}
+	
+	@Test
+	void testFunction3() throws Exception {
+		String input = "function ( x ... ) end";
+		assertThrows(SyntaxException.class, () -> {
+		Exp e = parseAndShow(input);
+		});	
+	}
+	
+	@Test
+	void testFunction4() throws Exception {
+		String input = "function ( true ) end";
+		assertThrows(SyntaxException.class, () -> {
+		Exp e = parseAndShow(input);
+		});	
+	}
+	
+	@Test
+	void testFunction5() throws Exception {
+		String input = "function ( 5 ) end";
+		assertThrows(SyntaxException.class, () -> {
+		Exp e = parseAndShow(input);
+		});	
+	}
+	
+	@Test
+	void testFunction6() throws Exception {
+		String input = "function ( \"x\" ) end";
+		assertThrows(SyntaxException.class, () -> {
+		Exp e = parseAndShow(input);
+		});	
+	}
+	
+	@Test
+	void testTable0() throws Exception {
+		String input = "{ }";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpTable.class, e.getClass());
+	}
+	
 }

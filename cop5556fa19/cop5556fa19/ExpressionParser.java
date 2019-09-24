@@ -253,9 +253,10 @@ public class ExpressionParser {
 		} else if (isKind(LCURLY)) {
 			Token first = consume();
 			FieldList fieldList = null;
-			if (!(isKind(RCURLY))) { fieldList = fieldList();}
+			List<Field> fields = new ArrayList<Field>();
+			if (!(isKind(RCURLY))) { fieldList = fieldList(); fields = fieldList.fields;}
 			match(RCURLY);
-			return new ExpTable(t, fieldList.fields);
+			return new ExpTable(t, fields);
 		} else if (isKind(LPAREN)) {
 			Token first = consume();
 			Exp e0 = exp();
