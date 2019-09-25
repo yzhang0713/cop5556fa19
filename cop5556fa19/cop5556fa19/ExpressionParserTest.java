@@ -462,12 +462,12 @@ class ExpressionParserTest {
 		assertEquals(ExpTable.class, e.getClass());
 	}
 	
-//	@Test
-//	void testTable4() throws Exception {
-//		String input = "{ x / 9 >> 0 }";
-//		Exp e = parseAndShow(input);
-//		assertEquals(ExpTable.class, e.getClass());
-//	}
+	@Test
+	void testTable4() throws Exception {
+		String input = "{ x + 2 }";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpTable.class, e.getClass());
+	}
 	
 	@Test
 	void testTable5() throws Exception {
@@ -493,6 +493,20 @@ class ExpressionParserTest {
 	@Test
 	void testTable8() throws Exception {
 		String input = "{ {[1+2]=6 and true, function (x,y) end;}, x = 8 or false; 4+x }";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpTable.class, e.getClass());
+	}
+	
+	@Test
+	void testTable9() throws Exception {
+		String input = "{ [1+2]=6 and true, function (x,y) end; x = 8 or false; 4 + x, x / 2 + 4 }";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpTable.class, e.getClass());
+	}
+	
+	@Test
+	void testTable10() throws Exception {
+		String input = "{ [1+2]=6 and true, function (x,y) end; x = 8 or false, 4 + x, x / 2 + 4; }";
 		Exp e = parseAndShow(input);
 		assertEquals(ExpTable.class, e.getClass());
 	}

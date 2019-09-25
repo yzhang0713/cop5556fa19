@@ -72,10 +72,18 @@ public class ExpressionParser {
 		}
 		return e0;
 	}
-
+	
+	Exp exp(Token first) throws Exception {
+		Exp e0 = andExp(first);
+		while (isKind(KW_or)) {
+			Token op = consume();
+			Exp e1 = andExp();
+			e0 = new ExpBinary(first, e0, op, e1);
+		}
+		return e0;
+	}
 	
 	private Exp andExp() throws Exception {
-		// TODO Auto-generated method stub
 		Token first = t;
 		Exp e0 = comExp();
 		while (isKind(KW_and)) {
@@ -86,10 +94,30 @@ public class ExpressionParser {
 		return e0;
 //		throw new UnsupportedOperationException("andExp");  //I find this is a more useful placeholder than returning null.
 	}
+	
+	private Exp andExp(Token first) throws Exception {
+		Exp e0 = comExp(first);
+		while (isKind(KW_and)) {
+			Token op = consume();
+			Exp e1 = comExp();
+			e0 = new ExpBinary(first, e0, op, e1);
+		}
+		return e0;
+	}
 
 	private Exp comExp() throws Exception {
 		Token first = t;
 		Exp e0 = biorExp();
+		while (isKind(REL_EQEQ, REL_NOTEQ, REL_LE, REL_GE, REL_LT, REL_GT)) {
+			Token op = consume();
+			Exp e1 = biorExp();
+			e0 = new ExpBinary(first, e0, op, e1);
+		}
+		return e0;
+	}
+	
+	private Exp comExp(Token first) throws Exception {
+		Exp e0 = biorExp(first);
 		while (isKind(REL_EQEQ, REL_NOTEQ, REL_LE, REL_GE, REL_LT, REL_GT)) {
 			Token op = consume();
 			Exp e1 = biorExp();
@@ -109,9 +137,29 @@ public class ExpressionParser {
 		return e0;
 	}
 	
+	private Exp biorExp(Token first) throws Exception {
+		Exp e0 = bixorExp(first);
+		while (isKind(BIT_OR)) {
+			Token op = consume();
+			Exp e1 = bixorExp();
+			e0 = new ExpBinary(first, e0, op, e1);
+		}
+		return e0;
+	}
+	
 	private Exp bixorExp() throws Exception {
 		Token first = t;
 		Exp e0 = biampExp();
+		while (isKind(BIT_XOR)) {
+			Token op = consume();
+			Exp e1 = biampExp();
+			e0 = new ExpBinary(first, e0, op, e1);
+		}
+		return e0;
+	}
+	
+	private Exp bixorExp(Token first) throws Exception {
+		Exp e0 = biampExp(first);
 		while (isKind(BIT_XOR)) {
 			Token op = consume();
 			Exp e1 = biampExp();
@@ -131,6 +179,16 @@ public class ExpressionParser {
 		return e0;
 	}
 	
+	private Exp biampExp(Token first) throws Exception {
+		Exp e0 = bishiExp(first);
+		while (isKind(BIT_AMP)) {
+			Token op = consume();
+			Exp e1 = bishiExp();
+			e0 = new ExpBinary(first, e0, op, e1);
+		}
+		return e0;
+	}
+	
 	private Exp bishiExp() throws Exception {
 		Token first = t;
 		Exp e0 = canExp();
@@ -142,9 +200,29 @@ public class ExpressionParser {
 		return e0;
 	}
 	
+	private Exp bishiExp(Token first) throws Exception {
+		Exp e0 = canExp(first);
+		while (isKind(BIT_SHIFTL, BIT_SHIFTR)) {
+			Token op = consume();
+			Exp e1 = canExp();
+			e0 = new ExpBinary(first, e0, op, e1);
+		}
+		return e0;
+	}
+	
 	private Exp canExp() throws Exception {
 		Token first = t;
 		Exp e0 = addExp();
+		if (isKind(DOTDOT)) {
+			Token op = t;
+			Exp e1 = canTail();
+			e0 = new ExpBinary(first, e0, op, e1);
+		}
+		return e0;
+	}
+	
+	private Exp canExp(Token first) throws Exception {
+		Exp e0 = addExp(first);
 		if (isKind(DOTDOT)) {
 			Token op = t;
 			Exp e1 = canTail();
@@ -176,9 +254,29 @@ public class ExpressionParser {
 		return e0;
 	}
 	
+	private Exp addExp(Token first) throws Exception {
+		Exp e0 = mulExp(first);
+		while (isKind(OP_PLUS, OP_MINUS)) {
+			Token op = consume();
+			Exp e1 = mulExp();
+			e0 = new ExpBinary(first, e0, op, e1);
+		}
+		return e0;
+	}
+	
 	private Exp mulExp() throws Exception {
 		Token first = t;
 		Exp e0 = unaryExp();
+		while (isKind(OP_TIMES, OP_DIV, OP_MOD, OP_DIVDIV)) {
+			Token op = consume();
+			Exp e1 = unaryExp();
+			e0 = new ExpBinary(first, e0, op, e1);
+		}
+		return e0;
+	}
+	
+	private Exp mulExp(Token first) throws Exception {
+		Exp e0 = unaryExp(first);
 		while (isKind(OP_TIMES, OP_DIV, OP_MOD, OP_DIVDIV)) {
 			Token op = consume();
 			Exp e1 = unaryExp();
@@ -200,9 +298,31 @@ public class ExpressionParser {
 		return e0;
 	}
 	
+	private Exp unaryExp(Token first) throws Exception {
+		Exp e0 = null;
+		if (isKind(KW_not, OP_HASH, OP_MINUS, BIT_XOR)) {
+			Token op = consume();
+			e0 = unaryExp();
+			e0 = new ExpUnary(first, op.kind, e0);
+		} else {
+			e0 = powExp(first);
+		}
+		return e0;
+	}
+	
 	private Exp powExp() throws Exception {
 		Token first = t;
 		Exp e0 = term();
+		if (isKind(OP_POW)) {
+			Token op = t;
+			Exp e1 = powTail();
+			e0 = new ExpBinary(first, e0, op, e1);
+		}
+		return e0;
+	}
+	
+	private Exp powExp(Token first) throws Exception {
+		Exp e0 = term(first);
 		if (isKind(OP_POW)) {
 			Token op = t;
 			Exp e1 = powTail();
@@ -264,6 +384,40 @@ public class ExpressionParser {
 			return e0;
 		} else {
 			error(t.kind);
+			return null;
+		}
+	}
+	
+	private Exp term(Token first) throws Exception {
+		if (first.kind == KW_nil) {
+			return new ExpNil(first);
+		} else if (first.kind == KW_true) {
+			return new ExpTrue(first);
+		} else if (first.kind == KW_false) {
+			return new ExpFalse(first);
+		} else if (first.kind == INTLIT) {
+			return new ExpInt(first);
+		} else if (first.kind == STRINGLIT) {
+			return new ExpString(first);
+		} else if (first.kind == DOTDOTDOT) {
+			return new ExpVarArgs(first);
+		} else if (first.kind == KW_function) {
+			FuncBody body = functionBody();
+			return new ExpFunction(first, body);
+		} else if (first.kind == NAME) {
+			return new ExpName(first);
+		} else if (first.kind == LCURLY) {
+			FieldList fieldList = null;
+			List<Field> fields = new ArrayList<Field>();
+			if (!(isKind(RCURLY))) { fieldList = fieldList(); fields = fieldList.fields;}
+			match(RCURLY);
+			return new ExpTable(t, fields);
+		} else if (first.kind == LPAREN) {
+			Exp e0 = exp();
+			match(RPAREN);
+			return e0;
+		} else {
+			error(first.kind);
 			return null;
 		}
 	}
@@ -330,9 +484,14 @@ public class ExpressionParser {
 			return new FieldExpKey(first, key, value);
 		} else if (isKind(NAME)) {
 			Token first = consume();
-			match(ASSIGN);
-			Exp value = exp();
-			return new FieldNameKey(first, new Name(first, first.text), value);
+			if (isKind(ASSIGN)) {
+				match(ASSIGN);
+				Exp value = exp();
+				return new FieldNameKey(first, new Name(first, first.text), value);
+			} else {
+				Exp value = exp(first);
+				return new FieldImplicitKey(first, value);
+			}
 		} else {
 			Token first = t;
 			Exp value = exp();
