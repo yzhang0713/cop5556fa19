@@ -74,7 +74,7 @@ public class ExpressionParser {
 	}
 
 	
-	private Exp andExp() throws Exception{
+	private Exp andExp() throws Exception {
 		// TODO Auto-generated method stub
 		Token first = t;
 		Exp e0 = comExp();
@@ -87,7 +87,7 @@ public class ExpressionParser {
 //		throw new UnsupportedOperationException("andExp");  //I find this is a more useful placeholder than returning null.
 	}
 
-	private Exp comExp() throws Exception{
+	private Exp comExp() throws Exception {
 		Token first = t;
 		Exp e0 = biorExp();
 		while (isKind(REL_EQEQ, REL_NOTEQ, REL_LE, REL_GE, REL_LT, REL_GT)) {
@@ -98,7 +98,7 @@ public class ExpressionParser {
 		return e0;
 	}
 	
-	private Exp biorExp() throws Exception{
+	private Exp biorExp() throws Exception {
 		Token first = t;
 		Exp e0 = bixorExp();
 		while (isKind(BIT_OR)) {
@@ -109,7 +109,7 @@ public class ExpressionParser {
 		return e0;
 	}
 	
-	private Exp bixorExp() throws Exception{
+	private Exp bixorExp() throws Exception {
 		Token first = t;
 		Exp e0 = biampExp();
 		while (isKind(BIT_XOR)) {
@@ -120,7 +120,7 @@ public class ExpressionParser {
 		return e0;
 	}
 	
-	private Exp biampExp() throws Exception{
+	private Exp biampExp() throws Exception {
 		Token first = t;
 		Exp e0 = bishiExp();
 		while (isKind(BIT_AMP)) {
@@ -131,7 +131,7 @@ public class ExpressionParser {
 		return e0;
 	}
 	
-	private Exp bishiExp() throws Exception{
+	private Exp bishiExp() throws Exception {
 		Token first = t;
 		Exp e0 = canExp();
 		while (isKind(BIT_SHIFTL, BIT_SHIFTR)) {
@@ -142,7 +142,7 @@ public class ExpressionParser {
 		return e0;
 	}
 	
-	private Exp canExp() throws Exception{
+	private Exp canExp() throws Exception {
 		Token first = t;
 		Exp e0 = addExp();
 		if (isKind(DOTDOT)) {
@@ -153,7 +153,7 @@ public class ExpressionParser {
 		return e0;
 	}
 	
-	private Exp canTail() throws Exception{
+	private Exp canTail() throws Exception {
 		Token first = consume();
 		first = t;
 		Exp e0 = addExp();
@@ -165,7 +165,7 @@ public class ExpressionParser {
 		return e0;
 	}
 	
-	private Exp addExp() throws Exception{
+	private Exp addExp() throws Exception {
 		Token first = t;
 		Exp e0 = mulExp();
 		while (isKind(OP_PLUS, OP_MINUS)) {
@@ -176,7 +176,7 @@ public class ExpressionParser {
 		return e0;
 	}
 	
-	private Exp mulExp() throws Exception{
+	private Exp mulExp() throws Exception {
 		Token first = t;
 		Exp e0 = unaryExp();
 		while (isKind(OP_TIMES, OP_DIV, OP_MOD, OP_DIVDIV)) {
@@ -187,7 +187,7 @@ public class ExpressionParser {
 		return e0;
 	}
 	
-	private Exp unaryExp() throws Exception{
+	private Exp unaryExp() throws Exception {
 		Token first = t;
 		Exp e0 = null;
 		if (isKind(KW_not, OP_HASH, OP_MINUS, BIT_XOR)) {
@@ -200,7 +200,7 @@ public class ExpressionParser {
 		return e0;
 	}
 	
-	private Exp powExp() throws Exception{
+	private Exp powExp() throws Exception {
 		Token first = t;
 		Exp e0 = term();
 		if (isKind(OP_POW)) {
@@ -211,7 +211,7 @@ public class ExpressionParser {
 		return e0;
 	}
 	
-	private Exp powTail() throws Exception{
+	private Exp powTail() throws Exception {
 		Token first = consume();
 		first = t;
 		Exp e0 = term();
@@ -224,7 +224,7 @@ public class ExpressionParser {
 	}
 	
 	
-	private Exp term() throws Exception{
+	private Exp term() throws Exception {
 		if (isKind(KW_nil)) {
 			Token first = consume();
 			return new ExpNil(first);

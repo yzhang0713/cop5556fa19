@@ -489,4 +489,103 @@ class ExpressionParserTest {
 		Exp e = parseAndShow(input);
 		assertEquals(ExpTable.class, e.getClass());
 	}
+	
+	@Test
+	void testPrecedence0() throws Exception {
+		String input = "1 and 2 or 4 > 6 | 9";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(1, KW_and, 2)
+				, KW_or
+				, Expressions.makeBinary(
+						Expressions.makeInt(4)
+						, REL_GT
+						, Expressions.makeBinary(6, BIT_OR, 9)));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testPrecedence1() throws Exception {
+		String input = "1 ~ 2 | 3 << 4 & 5";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(1, BIT_XOR, 2)
+				, BIT_OR
+				, Expressions.makeBinary(
+						Expressions.makeBinary(3, BIT_SHIFTL, 4)
+						, BIT_AMP
+						, Expressions.makeInt(5)));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testPrecedence2() throws Exception {
+		String input = "1 .. 2 >> 3 * 4 - 5";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(1, DOTDOT, 2)
+				, BIT_SHIFTR
+				, Expressions.makeBinary(
+						Expressions.makeBinary(3, OP_TIMES, 4)
+						, OP_MINUS
+						, Expressions.makeInt(5)));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testPrecedence3() throws Exception {
+		String input = "1 // 2 - 3 ^ 4 * -5";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(1, OP_DIVDIV, 2)
+				, OP_MINUS
+				, Expressions.makeBinary(
+						Expressions.makeBinary(3, OP_POW, 4)
+						, OP_TIMES
+						, Expressions.makeExpUnary(OP_MINUS, 5)));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testPrecedence4() throws Exception {
+		String input = "1 // 2 - 3 ^ (4 + 5)";
+		Exp e = parseAndShow(input);
+		Exp expected = Expressions.makeBinary(
+				Expressions.makeBinary(1, OP_DIVDIV, 2)
+				, OP_MINUS
+				, Expressions.makeBinary(
+						Expressions.makeInt(3)
+						, OP_POW
+						, Expressions.makeBinary(4, OP_PLUS, 5)));
+		show("expected=" + expected);
+		assertEquals(expected,e);
+	}
+	
+	@Test
+	void testError0() throws Exception {
+		String input = "{ 1 + 2; x = 4 or 5";
+		assertThrows(SyntaxException.class, () -> {
+		Exp e = parseAndShow(input);
+		});
+	}
+	
+	@Test
+	void testError1() throws Exception {
+		String input = "function ( x end";
+		assertThrows(SyntaxException.class, () -> {
+		Exp e = parseAndShow(input);
+		});
+	}
+	
+	@Test
+	void testError2() throws Exception {
+		String input = "1 + 2 ^ ^ 3";
+		assertThrows(SyntaxException.class, () -> {
+		Exp e = parseAndShow(input);
+		});
+	}
 }
