@@ -491,6 +491,13 @@ class ExpressionParserTest {
 	}
 	
 	@Test
+	void testTable8() throws Exception {
+		String input = "{ {[1+2]=6 and true, function (x,y) end;}, x = 8 or false; 4+x }";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpTable.class, e.getClass());
+	}
+	
+	@Test
 	void testPrecedence0() throws Exception {
 		String input = "1 and 2 or 4 > 6 | 9";
 		Exp e = parseAndShow(input);
