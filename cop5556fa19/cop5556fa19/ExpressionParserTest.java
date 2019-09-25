@@ -147,6 +147,13 @@ class ExpressionParserTest {
 	}
 	
 	@Test
+	void testBinary1() throws Exception {
+		String input = "x + 2";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpBinary.class, e.getClass());
+	}
+	
+	@Test
 	void testUnary0() throws Exception {
 		String input = "-2";
 		Exp e = parseAndShow(input);
@@ -434,4 +441,52 @@ class ExpressionParserTest {
 		assertEquals(ExpTable.class, e.getClass());
 	}
 	
+	@Test
+	void testTable1() throws Exception {
+		String input = "{ [ 1 + 2 ] = true }";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpTable.class, e.getClass());
+	}
+	
+	@Test
+	void testTable2() throws Exception {
+		String input = "{ x = 5 & nil }";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpTable.class, e.getClass());
+	}
+	
+	@Test
+	void testTable3() throws Exception {
+		String input = "{ function ( ) end }";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpTable.class, e.getClass());
+	}
+	
+//	@Test
+//	void testTable4() throws Exception {
+//		String input = "{ x / 9 >> 0 }";
+//		Exp e = parseAndShow(input);
+//		assertEquals(ExpTable.class, e.getClass());
+//	}
+	
+	@Test
+	void testTable5() throws Exception {
+		String input = "{ 5 + 3 & 1 }";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpTable.class, e.getClass());
+	}
+	
+	@Test
+	void testTable6() throws Exception {
+		String input = "{ [1+2]=6 and true, function () end; x = 8 or false; 4+3, }";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpTable.class, e.getClass());
+	}
+	
+	@Test
+	void testTable7() throws Exception {
+		String input = "{ [1+2]=6 and true, function (x,y) end; x = 8 or false; 4+x }";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpTable.class, e.getClass());
+	}
 }

@@ -270,13 +270,13 @@ public class ExpressionParser {
 	
 	private FuncBody functionBody() throws Exception{
 		if (isKind(LPAREN)) {
-			Token t = consume();
+			Token first = consume();
 			ParList p = null;
 			if (!(isKind(RPAREN))) { p = parList();}
 			match(RPAREN);
 			Block b = block();
 			match(KW_end);
-			return new FuncBody(t, p, b);
+			return new FuncBody(first, p, b);
 		} else {
 			error(LPAREN);
 			return null;
@@ -285,13 +285,13 @@ public class ExpressionParser {
 	
 	private ParList parList() throws Exception{
 		if (isKind(DOTDOTDOT)) {
-			Token t = consume();
+			Token first = consume();
 			List<Name> nameList = null;
-			return new ParList(t, nameList, false);
+			return new ParList(first, nameList, false);
 		} else if (isKind(NAME)) {
 			List<Name> nameList = new ArrayList<Name>();
-			Token t = consume();
-			nameList.add(new Name(t, t.text));
+			Token first = consume();
+			nameList.add(new Name(first, first.text));
 			while (isKind(COMMA)) {
 				Token tmp = consume();
 				if (isKind(NAME)) {
@@ -301,7 +301,7 @@ public class ExpressionParser {
 					error(NAME);
 				}
 			}
-			return new ParList(t, nameList, true);
+			return new ParList(first, nameList, true);
 		} else {
 			error(DOTDOTDOT, NAME);
 			return null;
@@ -310,30 +310,34 @@ public class ExpressionParser {
 	
 	private FieldList fieldList() throws Exception{
 		List<Field> fields = new ArrayList<Field>();
-		Token t = null;
-		Exp value = null;
+		Token first = t;
+		fields.add(field());
+		while (isKind(COMMA, SEMI)) {
+			Token tmp = consume();
+			if (!(isKind(RCURLY))) { fields.add(field());}
+			else { break;}
+		}
+		return new FieldList(first, fields);
+	}
+	
+	private Field field() throws Exception{
 		if (isKind(LSQUARE)) {
-			t = consume();
+			Token first = consume();
 			Exp key = exp();
 			match(RSQUARE);
 			match(ASSIGN);
-			value = exp();
-			fields.add(new FieldExpKey(t, key, value));
+			Exp value = exp();
+			return new FieldExpKey(first, key, value);
 		} else if (isKind(NAME)) {
-			t = consume();
+			Token first = consume();
 			match(ASSIGN);
-			value = exp();
-			fields.add(new FieldNameKey(t, new Name(t, t.text), value));
+			Exp value = exp();
+			return new FieldNameKey(first, new Name(first, first.text), value);
 		} else {
-			t = consume();
-			value = exp();
-			fields.add(new FieldImplicitKey(t, value));
+			Token first = t;
+			Exp value = exp();
+			return new FieldImplicitKey(first, value);
 		}
-		return new FieldList(t, fields);
-	}
-	
-	void orTerm() throws Exception{
-		
 	}
 	
 	private Block block() {
