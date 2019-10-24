@@ -8,3 +8,5 @@
 /ExpressionParser$SyntaxException.class
 /ExpressionParser.class
 /ExpressionParserTest.class
+/Parser$SyntaxException.class
+/Parser.class
