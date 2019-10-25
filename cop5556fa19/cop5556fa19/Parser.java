@@ -80,8 +80,7 @@ public class Parser {
 		this.scanner = s;
 		t = scanner.getNext(); //establish invariant
 	}
-
-
+	
 	Exp exp() throws Exception {
 		Token first = t;
 		Exp e0 = andExp();
@@ -610,7 +609,7 @@ public class Parser {
 			consume();
 			if (isKind(NAME)) {
 				Token tmp = consume();
-				Exp key = new ExpName(tmp);
+				Exp key = new ExpString(tmp);
 				e1  = new ExpTableLookup(first, e, key);
 			} else {
 				error(t.kind, NAME);
@@ -619,7 +618,7 @@ public class Parser {
 			consume();
 			if (isKind(NAME)) {
 				Token tmp = consume();
-				Exp key = new ExpName(tmp);
+				Exp key = new ExpString(tmp);
 				e1 = new ExpTableLookup(first, e, key);
 				if (isKind(LPAREN, LCURLY, STRINGLIT)) {
 					List<Exp> args = new ArrayList<Exp>();
@@ -642,9 +641,7 @@ public class Parser {
 	Stat stat() throws Exception {
 		Token first = t;
 		Stat stat = null;
-		if (isKind(SEMI)) {
-			stat = null;
-		} else if (isKind(KW_break)) {
+		if (isKind(KW_break)) {
 			consume();
 			stat = new StatBreak(first);
 		} else if (isKind(COLONCOLON)) {
@@ -842,7 +839,7 @@ public class Parser {
 			consume();
 			if (isKind(NAME)) {
 				Token tmp = consume();
-				Exp key = new ExpName(tmp);
+				Exp key = new ExpString(tmp);
 				e1 = new ExpTableLookup(first, e, key);
 			}
 		} else {
@@ -923,8 +920,12 @@ public class Parser {
 		List<Stat> stats = new ArrayList<Stat>();
 		Stat stat = null;
 		while (isStatStart()) {
-			stat = stat();
-			stats.add(stat);
+			if (isKind(SEMI)) {
+				consume();
+			} else {
+				stat = stat();
+				stats.add(stat);
+			}
 		}
 		if (isKind(KW_return)) {
 			RetStat retStat = retStat();
@@ -934,6 +935,12 @@ public class Parser {
 	}
 	
 	Chunk chunk() throws Exception {
+		Token first = t;
+		Block b = block();
+		return new Chunk(first, b);
+	}
+	
+	Chunk parse() throws Exception {
 		Token first = t;
 		Block b = block();
 		return new Chunk(first, b);
