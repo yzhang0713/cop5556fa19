@@ -76,7 +76,7 @@ public class Parser {
 	Token t;  //invariant:  this is the next token
 
 
-	Parser(Scanner s) throws Exception {
+	public Parser(Scanner s) throws Exception {
 		this.scanner = s;
 		t = scanner.getNext(); //establish invariant
 	}
@@ -362,7 +362,6 @@ public class Parser {
 		return e0;
 	}
 	
-	
 	private Exp term() throws Exception {
 		if (isKind(KW_nil)) {
 			Token first = consume();
@@ -644,16 +643,16 @@ public class Parser {
 		if (isKind(KW_break)) {
 			consume();
 			stat = new StatBreak(first);
-		} else if (isKind(COLONCOLON)) {
-			consume();
-			if (isKind(NAME)) {
-				Token tmp = consume();
-				Name label = new Name(tmp, tmp.getName());
-				match(COLONCOLON);
-				stat = new StatLabel(first, label);
-			} else {
-				error(t.kind, NAME);
-			}
+//		} else if (isKind(COLONCOLON)) {
+//			consume();
+//			if (isKind(NAME)) {
+//				Token tmp = consume();
+//				Name label = new Name(tmp, tmp.getName());
+//				match(COLONCOLON);
+//				stat = new StatLabel(first, label);
+//			} else {
+//				error(t.kind, NAME);
+//			}
 		} else if (isKind(KW_goto)) {
 			consume();
 			if (isKind(NAME)) {
@@ -919,6 +918,7 @@ public class Parser {
 		Token first = t;
 		List<Stat> stats = new ArrayList<Stat>();
 		Stat stat = null;
+		Boolean hasRet = false;
 		while (isStatStart()) {
 			if (isKind(SEMI)) {
 				consume();
@@ -928,8 +928,10 @@ public class Parser {
 			}
 		}
 		if (isKind(KW_return)) {
+			if (hasRet) { throw new SyntaxException(first, "Only one return statement is allowed in one block.");}
 			RetStat retStat = retStat();
 			stats.add(retStat);
+			hasRet = true;
 		}
 		return new Block(first, stats);
 	}
@@ -940,7 +942,7 @@ public class Parser {
 		return new Chunk(first, b);
 	}
 	
-	Chunk parse() throws Exception {
+	public Chunk parse() throws Exception {
 		Token first = t;
 		Block b = block();
 		return new Chunk(first, b);

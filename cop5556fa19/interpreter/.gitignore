@@ -1,5 +1,3 @@
-/ParserTest_Sample.class
-/TestInterpreter.class
 /ASTVisitorAdapter$StaticSemanticException.class
 /ASTVisitorAdapter$TypeException.class
 /ASTVisitorAdapter.class
