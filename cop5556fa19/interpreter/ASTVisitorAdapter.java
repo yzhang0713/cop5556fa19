@@ -139,13 +139,14 @@ public abstract class ASTVisitorAdapter implements ASTVisitor {
 		if (stats.isEmpty()) {
 			return null;
 		} else {
-			List<LuaValue> vals = new ArrayList<LuaValue>();
 			for (Stat s : stats) {
 				if (s instanceof RetStat) {
-					vals = (List<LuaValue>) ((RetStat) s).visit(this, arg);
-					return vals;
+					return (List<LuaValue>) ((RetStat) s).visit(this, arg);
 				} else if (s instanceof StatAssign) {
+//					System.out.println(s.toString());
 					((StatAssign) s).visit(this, arg);
+				} else if (s instanceof StatIf) {
+					((StatIf) s).visit(this, arg);
 				}
 			}
 			return null;
@@ -184,7 +185,31 @@ public abstract class ASTVisitorAdapter implements ASTVisitor {
 
 	@Override
 	public Object visitStatIf(StatIf statIf, Object arg) throws Exception {
-		throw new UnsupportedOperationException();
+		List<Exp> es = statIf.es;
+		List<Block> bs = statIf.bs;
+//		System.out.println(es.toString());
+//		System.out.println(bs.toString());
+//		LuaBoolean bool = new LuaBoolean(false);
+		Boolean executed = false;
+		for (int i = 0; i < es.size(); i++) {
+			LuaValue val = (LuaValue) es.get(i).visit(this, arg);
+//			bool = (LuaBoolean) es.get(i).visit(this, arg);
+//			System.out.println(bool.value);
+			if ((val instanceof LuaBoolean && ((LuaBoolean) val).value) || (val instanceof LuaInt && ((LuaInt) val).v == 0)) {
+//				System.out.println(bs.get(i).toString());
+				executed = true;
+				return (List<LuaValue>) bs.get(i).visit(this, arg);
+			} else if ((val instanceof LuaBoolean && !((LuaBoolean) val).value) || (val instanceof LuaNil)) {
+				continue;
+			} else {
+				throw new StaticSemanticException(statIf.firstToken, "Invalid logic value in if statement.");
+			}
+		}
+		if (bs.size() > es.size() && !executed) {
+			return (List<LuaValue>) bs.get(bs.size()-1).visit(this,arg);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -220,14 +245,20 @@ public abstract class ASTVisitorAdapter implements ASTVisitor {
 	@Override
 	public Object visitRetStat(RetStat retStat, Object arg) throws Exception {
         ExpList expList = new ExpList(retStat.firstToken, retStat.el);
+//        System.out.println(expList.toString());
 		List<LuaValue> vals = (List<LuaValue>) expList.visit(this,arg);
+//		System.out.println(vals.toString());
 		return vals;
 	}
 
 	@Override
 	public Object visitChunk(Chunk chunk, Object arg) throws Exception {
 		Block b = chunk.block;
+//		System.out.println(chunk.toString());
+//		List<LuaValue> vals = (List<LuaValue>) b.visit(this, arg);
 		return (List<LuaValue>) b.visit(this, arg);
+//		System.out.println(vals.get(1).toString());
+//		return vals;
 	}
 
 	@Override
@@ -247,12 +278,12 @@ public abstract class ASTVisitorAdapter implements ASTVisitor {
 
 	@Override
 	public Object visitExpTrue(ExpTrue expTrue, Object arg) {
-		throw new UnsupportedOperationException();
+		return new LuaBoolean(true);
 	}
 
 	@Override
 	public Object visitExpFalse(ExpFalse expFalse, Object arg) {
-		throw new UnsupportedOperationException();
+		return new LuaBoolean(false);
 	}
 
 	@Override
@@ -281,6 +312,7 @@ public abstract class ASTVisitorAdapter implements ASTVisitor {
 			val = (LuaValue) expList.get(i).visit(this, arg);
 			((LuaTable) arg).put(key, val);
 		}
+//		System.out.println(((LuaTable) arg).toString());
 		return null;
 	}
 
