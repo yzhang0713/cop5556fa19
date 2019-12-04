@@ -919,21 +919,45 @@ public class Parser {
 		List<Stat> stats = new ArrayList<Stat>();
 		Stat stat = null;
 		Boolean hasRet = false;
+		Block b = null;
+		int index = 0;
+		List<Integer> labels = new ArrayList<Integer>();
 		while (isStatStart()) {
 			if (isKind(SEMI)) {
 				consume();
+			} else if (isKind(COLONCOLON)) {
+				consume();
+				if (isKind(NAME)) {
+					Token tmp = consume();
+					Name label = new Name(tmp, tmp.getName());
+					match(COLONCOLON);
+					stat = new StatLabel(first, label, b, index);
+					stats.add(stat);
+					labels.add(index);
+					index += 1;
+				} else {
+					error(t.kind, NAME);
+				}
 			} else {
 				stat = stat();
 				stats.add(stat);
+				index += 1;
 			}
 		}
 		if (isKind(KW_return)) {
 			if (hasRet) { throw new SyntaxException(first, "Only one return statement is allowed in one block.");}
 			RetStat retStat = retStat();
 			stats.add(retStat);
+			index += 1;
 			hasRet = true;
 		}
-		return new Block(first, stats);
+		b = new Block(first, stats);
+		if (!labels.isEmpty()) {
+			for (int i = 0; i < labels.size(); i++) {
+				((StatLabel) stats.get(labels.get(i))).enclosingBlock = b;
+			}
+		}
+		return b;
 	}
 	
 	Chunk chunk() throws Exception {

@@ -11,3 +11,9 @@
 /LuaTable.class
 /LuaValue.class
 /StaticSemanticException.class
+/StaticAnalysis.class
+/StaticAnalysis$StaticAnalysisException.class
+/ASTVisitorAdapter$GotoException.class
+/ASTVisitorAdapter$ReturnException.class
+/ASTVisitorAdapter$InLoopBreakException.class
+/ASTVisitorAdapter$BreakException.class
