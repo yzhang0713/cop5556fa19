@@ -17,3 +17,4 @@
 /ASTVisitorAdapter$ReturnException.class
 /ASTVisitorAdapter$InLoopBreakException.class
 /ASTVisitorAdapter$BreakException.class
+/ASTVisitorAdapter$TableLookupException.class

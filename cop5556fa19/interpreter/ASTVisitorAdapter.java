@@ -94,6 +94,12 @@ public abstract class ASTVisitorAdapter implements ASTVisitor {
 		List<LuaValue> vals = new ArrayList<LuaValue>();
 	}
 	
+	@SuppressWarnings("serial")
+	public static class TableLookupException extends Exception {
+		LuaTable table = null;
+		LuaValue key = null;
+	}
+	
 	public abstract List<LuaValue> load(Reader r) throws Exception;
 
 	@Override
@@ -623,10 +629,17 @@ public abstract class ASTVisitorAdapter implements ASTVisitor {
 		List<Exp> expList = statAssign.expList;
 		LuaValue key;
 		LuaValue val;
+		LuaTable table = null;
+		Boolean isTable = false;
 		for (int i = 0; i < varList.size(); i++) {
 			if (varList.get(i) instanceof ExpName) {
 				Exp var = new ExpString(varList.get(i).firstToken);
 				key = (LuaValue) var.visit(this, arg);
+			} else if (varList.get(i) instanceof ExpTableLookup) {
+				isTable = true;
+//				System.out.println(((ExpTableLookup) varList.get(i)).table.toString());
+				table = (LuaTable) ((ExpTableLookup) varList.get(i)).table.visit(this, arg);
+				key = (LuaValue) ((ExpTableLookup) varList.get(i)).key.visit(this, arg);
 			} else {
 				key = (LuaValue) varList.get(i).visit(this, arg);
 			}
@@ -635,7 +648,11 @@ public abstract class ASTVisitorAdapter implements ASTVisitor {
 			} else {
 				val = LuaNil.nil;
 			}
-			((LuaTable) arg).put(key, val);
+			if (isTable) {
+				table.put(key, val);
+			} else {
+				((LuaTable) arg).put(key, val);
+			}
 		}
 //		System.out.println(((LuaTable) arg).toString());
 		return null;
@@ -643,9 +660,12 @@ public abstract class ASTVisitorAdapter implements ASTVisitor {
 
 	@Override
 	public Object visitExpTableLookup(ExpTableLookup expTableLookup, Object arg) throws Exception {
-		Exp table = expTableLookup.table;
-		Exp key = expTableLookup.key;
-		return ((LuaTable) ((LuaTable) arg).get((LuaValue) table.visit(this, arg))).get((LuaValue) key.visit(this, arg)); 
+//		Exp table = expTableLookup.table;
+//		Exp key = expTableLookup.key;
+//		LuaTable table = (LuaTable) ((LuaTable) arg).get((LuaValue) expTableLookup.table.visit(this, arg));
+		LuaTable table = (LuaTable) expTableLookup.table.visit(this, arg);
+		LuaValue key = (LuaValue) expTableLookup.key.visit(this, arg);
+		return table.get(key);
 	}
 
 	@Override

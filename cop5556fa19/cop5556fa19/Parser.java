@@ -922,7 +922,7 @@ public class Parser {
 		Block b = null;
 		int index = 0;
 		List<Integer> labels = new ArrayList<Integer>();
-		while (isStatStart()) {
+		while (isStatStart() || isKind(KW_return)) {
 			if (isKind(SEMI)) {
 				consume();
 			} else if (isKind(COLONCOLON)) {
@@ -938,18 +938,20 @@ public class Parser {
 				} else {
 					error(t.kind, NAME);
 				}
-			} else {
+			} else if (isKind(KW_return)) {
+				if (hasRet) { throw new SyntaxException(first, "Only one return statement is allowed in one block.");}
+				RetStat retStat = retStat();
+				stats.add(retStat);
+				index += 1;
+				hasRet = true;
+			}else {
 				stat = stat();
 				stats.add(stat);
 				index += 1;
 			}
 		}
-		if (isKind(KW_return)) {
-			if (hasRet) { throw new SyntaxException(first, "Only one return statement is allowed in one block.");}
-			RetStat retStat = retStat();
-			stats.add(retStat);
-			index += 1;
-			hasRet = true;
+		if (hasRet && !(stats.get(index-1) instanceof RetStat)) {
+			throw new SyntaxException(first, "Return statement needs to be the last in block.");
 		}
 		b = new Block(first, stats);
 		if (!labels.isEmpty()) {
