@@ -120,6 +120,10 @@ public abstract class ASTVisitorAdapter implements ASTVisitor {
 			case DOTDOT: {
 				if (v0 instanceof LuaString && v1 instanceof LuaString) {
 					return (LuaValue) new LuaString(((LuaString) v0).value + ((LuaString) v1).value);
+				} else if (v0 instanceof LuaInt && v1 instanceof LuaString) {
+					return (LuaValue) new LuaString(Integer.toString(((LuaInt) v0).v) + ((LuaString) v1).value);
+				} else if (v0 instanceof LuaString && v1 instanceof LuaInt) {
+					return (LuaValue) new LuaString(((LuaString) v0).value + Integer.toString(((LuaInt) v1).v));
 				} else {
 					throw new StaticSemanticException(expBin.firstToken, "Cannot perform binary operation.");
 				}
@@ -571,6 +575,8 @@ public abstract class ASTVisitorAdapter implements ASTVisitor {
 	@Override
 	public Object visitChunk(Chunk chunk, Object arg) throws Exception {
 		List<LuaValue> vals = null;
+		System.out.println(((LuaTable) arg).toString());
+		System.out.println(((LuaTable) arg).get("toNumber").toString());
 		try {
 			chunk.block.visit(this, arg);
 		}

@@ -535,5 +535,13 @@ import interpreter.StaticSemanticException;
 			assertEquals(expectedList,ret);
 		}
 		
+		@Test
+		void testTonumber() throws Exception{
+			String input = "a=toNumber(\"2\"); return a";
+			show(input);
+			List<LuaValue> ret = interpret(input);
+			show(ret);
+		}
+		
 
 }
