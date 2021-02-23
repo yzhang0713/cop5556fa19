@@ -435,6 +435,20 @@ class ExpressionParserTest {
 	}
 	
 	@Test
+	void testFunction7() throws Exception {
+		String input = "function (aa, b) end";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpFunction.class, e.getClass());
+	}
+	
+	@Test
+	void testFunction8() throws Exception {
+		String input = "function (...) end";
+		Exp e = parseAndShow(input);
+		assertEquals(ExpFunction.class, e.getClass());
+	}
+	
+	@Test
 	void testTable0() throws Exception {
 		String input = "{ }";
 		Exp e = parseAndShow(input);
